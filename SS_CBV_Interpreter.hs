@@ -4,34 +4,7 @@ import Data
 import DataUtil
 
 int :: Program -> Expr -> Expr
-int p e = until isValue (intStep p) e
-
-intStep :: Program -> Expr -> Expr
-intStep p (Ctr name args) =
-	Ctr name (values ++ (intStep p x : xs)) where
-		(values, x : xs) = span isValue args
-
-intStep p (FCall name args) | all isValue args = body // zip vs args where
-                                                  (FDef _ vs body) = fDef p name
-intStep p (FCall name args) = FCall name (values ++ (intStep p x : xs)) where
-                                (values, x : xs) = span isValue args
-
-intStep p (GCall gname (Ctr cname cargs : args)) | all isValue (cargs ++ args) =
-	body // zip (cvs ++ vs) (cargs ++ args) where
-		(GDef _ (Pat _ cvs) vs body) = gDef p gname cname
-
-intStep p (GCall gname (Ctr cname cargs : args)) | all isValue cargs =
-  GCall gname (Ctr cname cargs : (values ++ (intStep p x : xs))) where
-    (values, x : xs) = span isValue args
-
-intStep p (GCall gname (Ctr cname cargs : args)) =
-  GCall gname (Ctr cname (values ++ (intStep p x : xs)) : args) where
-    (values, x : xs) = span isValue cargs
-
-intStep p (GCall gname (e:es)) =
-	(GCall gname (intStep p e : es))
-
-------------------------------
+int p = fst . (intC p)
 
 intC :: Program -> Expr -> (Expr, Integer)
 intC p e = until (isValue . fst) (updateState (intStepC p)) (e, 0)
@@ -65,3 +38,9 @@ intStepC p (GCall gname (Ctr cname cargs : args)) =
 intStepC p (GCall gname (e:es)) =
 	(GCall gname (steppedE:es), c) where
     (steppedE, c) = intStepC p e
+
+intStepC p (TestEq (el, er) (tb, eb)) | isValue el && isValue er = if el == er then (tb, 0) else (eb, 0)
+                                      | isValue el = let (steppedER, c) = intStepC p er
+                                                     in (TestEq (el, steppedER) (tb, eb), c)
+                                      | otherwise  = let (steppedEL, c) = intStepC p el
+                                                     in (TestEq (steppedEL, er) (tb, eb), c)

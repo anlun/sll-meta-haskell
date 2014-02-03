@@ -12,4 +12,5 @@ int p (GCall gname params) =
   int p $ body // zip (cvs ++ vs) (cargs ++ args) where
     (Ctr cname cargs : args)     = map (int p) params
     (GDef _ (Pat _ cvs) vs body) = gDef p gname cname
+int p (TestEq (el, er) (tb, fb)) = if int p el == int p er then int p tb else int p fb
 int p e = e

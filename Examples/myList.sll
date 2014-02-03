@@ -1,6 +1,9 @@
 {-
 Count test of CBV and CBN SS interpreters.
 intC progMyList $ read "fTest(fSize(Cons(Nil(), Cons(Nil(), Nil()))))"
+
+If-then test.
+int progMyList $ read "gContains(Cons(Nil(), Cons(A(), Nil())), A())"
 -}
 
 fV(x) = fV(x);
