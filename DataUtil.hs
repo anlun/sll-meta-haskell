@@ -108,3 +108,12 @@ test (a@(Atom _), Var v rs)
         s2 = [(v, Var v [a])]
 test (a1@(Atom _), a2@(Atom _)) =
     Left (a1 == a2)
+
+------------------------------
+
+updateState :: (Expr -> (Expr, Integer)) -> (Expr, Integer) -> (Expr, Integer)
+updateState f (e, n) =
+  (e', n + n') where
+    (e', n') = f e
+
+

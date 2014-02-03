@@ -24,11 +24,6 @@ intStep p (GCall gname (e:es)) =
 
 ------------------------------
 
-updateState :: (Expr -> (Expr, Integer)) -> (Expr, Integer) -> (Expr, Integer)
-updateState f (e, n) =
-  (e', n + n') where
-    (e', n') = f e
-
 intC :: Program -> Expr -> (Expr, Integer)
 intC p e = until (isValue . fst) (updateState (intStepC p)) (e, 0)
 
