@@ -1,5 +1,5 @@
 gContains(Nil(), y) = F();
-gContains(Cons(x, xs), y) = if x=y then T() else gContains(xs, ys);
+gContains(Cons(x, xs), y) = if x=y then T() else gContains(xs, y);
 
 {- tree size -}
 fSize(xs) = gSize1(xs, Z());
