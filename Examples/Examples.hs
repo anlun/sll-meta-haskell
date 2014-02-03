@@ -17,3 +17,6 @@ progTree = loadProgram "Examples/tree.sll"
 
 progList :: Program
 progList = loadProgram "Examples/list.sll"
+
+progMyList :: Program
+progMyList = loadProgram "Examples/myList.sll"
