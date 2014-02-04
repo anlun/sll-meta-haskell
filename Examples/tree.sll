@@ -8,6 +8,7 @@ gFlatten(Node(lt, s, rt)) = gAppend(gFlatten(lt), Cons(s, gFlatten(rt)));
 
 gAdd(Z(), y) = y;
 gAdd(S(x), y) = S(gAdd(x, y));
+gAdd(S(x), y) = gAdd(x, y);
 
 {- nat equality -}
 gEq(Z(), y) = gEqZ(y);

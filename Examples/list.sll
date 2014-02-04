@@ -20,3 +20,9 @@ gEqS(Z(), n)  = F();
 gEqS(S(m), n) = gEqNat(n, m);
 gAnd(F(), b) = F();
 gAnd(T(), b) = b;
+
+fV(x) = Z(x);
+fV(x) = S(x);
+
+fV2() = Z();
+fV2() = T();
