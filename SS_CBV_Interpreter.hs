@@ -18,26 +18,17 @@ intStepC p (Ctr name args) =
 intStepC p (FCall name args) | all isValue args = (body // zip vs args, 1) where
                                                   (FDef _ vs body) = fDef p name
 intStepC p (FCall name args) = (FCall name (values ++ (steppedX:xs)), c) where
-                                (values, x : xs) = span isValue args
+                                (values, x:xs) = span isValue args
                                 (steppedX, c) = intStepC p x
 
 intStepC p (GCall gname (Ctr cname cargs : args)) | all isValue (cargs ++ args) =
 	(body // zip (cvs ++ vs) (cargs ++ args), 1) where
 		(GDef _ (Pat _ cvs) vs body) = gDef p gname cname
 
-intStepC p (GCall gname (Ctr cname cargs : args)) | all isValue cargs =
-  (GCall gname (Ctr cname cargs : (values ++ (steppedX: xs))), c) where
-    (values, x : xs) = span isValue args
-    (steppedX, c) = intStepC p x
-
-intStepC p (GCall gname (Ctr cname cargs : args)) =
-  (GCall gname (Ctr cname (values ++ (steppedX:xs)) : args), c) where
-    (values, x : xs) = span isValue cargs
-    (steppedX, c) = intStepC p x
-
-intStepC p (GCall gname (e:es)) =
-	(GCall gname (steppedE:es), c) where
-    (steppedE, c) = intStepC p e
+intStepC p (GCall gname args) =
+  let (values, x:xs) = span isValue args
+      (steppedX, c) = intStepC p x
+  in (GCall gname (values ++ (steppedX:xs)), c)
 
 intStepC p (TestEq (el, er) (tb, eb)) | isValue el && isValue er = if el == er then (tb, 0) else (eb, 0)
                                       | isValue el = let (steppedER, c) = intStepC p er
