@@ -31,7 +31,11 @@ isVar _ = False
 
 -- gets an f-definition from a program by name
 fDef :: Program -> Name -> FDef
-fDef (Program fs _) fname = head [f | f@(FDef x _ _) <- fs, x == fname]
+fDef p = head . (fDefs p)
+
+-- gets all f-definition from a program by name
+fDefs :: Program -> Name -> [FDef]
+fDefs (Program fs _) fname = [f | f@(FDef x _ _) <- fs, x == fname]
 
 -- gets all g-definitiona from a program by name
 gDefs :: Program -> Name -> [GDef]
@@ -39,7 +43,10 @@ gDefs (Program _ gs) gname = [g | g@(GDef x _ _ _) <- gs, x == gname]
 
 -- gets a (single!) g-definition by name and pattern
 gDef :: Program -> Name -> Name -> GDef
-gDef p gname cname = head [g | g@(GDef _ (Pat c _) _ _) <- gDefs p gname, c == cname]
+gDef p gname = head . (gDefsPat p gname)
+ 
+gDefsPat :: Program -> Name -> Name -> [GDef]
+gDefsPat p gname cname = [g | g@(GDef _ (Pat c _) _ _) <- gDefs p gname, c == cname]
 
 -- applies a substitution to an expression
 (//) :: Expr -> Subst Expr -> Expr

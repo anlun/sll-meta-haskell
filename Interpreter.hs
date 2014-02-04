@@ -11,12 +11,10 @@ buildEvaluationTree m c = case m c of
 exprMachine :: Program -> Machine Expr
 exprMachine p = step where
     step :: Machine Expr
-    step (Atom n) =
-        Stop (Atom n)
-    step (Ctr name []) =
-        Stop (Ctr name [])
-    step (Ctr name args) =
-        Decompose name args
+    step (Atom n)        = Stop (Atom n)
+    step (Ctr name [])   = Stop (Ctr name [])
+    step (Ctr name args) = Decompose name args
+
     step (FCall name args) | (FDef _ vs body) <- fDef p name=
         Transient Nothing (body // zip vs args)
     step (GCall g ((Ctr c cargs) : args)) | (GDef _ pat@(Pat _ cvs) vs body) <- gDef p g c =
